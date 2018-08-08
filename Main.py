@@ -68,7 +68,6 @@ class RecycleViewApp(App):
         self.MainLayout = uix.floatlayout.FloatLayout(size= (330,300))
         self.MainLayout.add_widget(self.a)
         self.MainLayout.add_widget(self.img)
-        self.create()
         return self.MainLayout
     def cool(self,instanse):
         img = FaceGane.getFace()
@@ -82,17 +81,5 @@ class RecycleViewApp(App):
         self.img.texture = tex
 
 
-    def create(self):
-        colors = []
 
-        #
-        # # Создание списка.
-        # for name_color in hex_colormap.keys():
-        #     colors.append({
-        #         "name_color": self.a.text,
-        #         "viewclass": "Item",
-        #         'color': get_color_from_hex(hex_colormap[name_color]),
-        #         'height': dp(20),
-        #     })
-        # self.rv.data = colors
 RecycleViewApp().run()
