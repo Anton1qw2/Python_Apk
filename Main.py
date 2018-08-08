@@ -11,42 +11,6 @@ from kivy.uix.widget import Widget
 from kivy.graphics.texture import Texture
 from Business_logic import FaceGane
 
-KV = """
-# Разметка пункта списка.
-<Item@BoxLayout>:
-    color: []
-    name_color: ''
-
-    Label
-        canvas.before:
-            Color:
-                rgba: root.color
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        text: root.name_color
-        color: 0, 0, 0, 1
-
-# Контейнер для списка.
-BoxLayout:
-    orientation: "vertical"
-
-    RecycleView:
-        id: rv
-        key_size: 'height'
-        key_viewclass: 'viewclass'
-
-        RecycleBoxLayout:
-            id: box
-            default_size: None, None
-            default_size_hint: 1, None
-            size_hint_y: None
-            height: self.minimum_height
-            orientation: 'vertical'
-            spacing: dp(10)
-            padding: dp(5)
-
-"""
 
 class RecycleViewApp(App):
     text = "Cool Buuton"
