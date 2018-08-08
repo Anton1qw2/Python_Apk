@@ -1,0 +1,398 @@
+node {
+  name: "input"
+  op: "Placeholder"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "G/fully_connected/MatMul"
+  op: "MatMul"
+  input: "input"
+  input: "G/fully_connected/weights"
+  attr {
+    key: "transpose_a"
+    value {
+      b: false
+    }
+  }
+  attr {
+    key: "transpose_b"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "G/fully_connected/BiasAdd"
+  op: "BiasAdd"
+  input: "G/fully_connected/MatMul"
+  input: "G/fully_connected/biases"
+}
+node {
+  name: "G/Reshape/shape_nchw"
+  op: "Const"
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_INT32
+        tensor_shape {
+          dim {
+            size: 4
+          }
+        }
+        int_val: -1
+        int_val: 128
+        int_val: 8
+        int_val: 8
+      }
+    }
+  }
+}
+node {
+  name: "G/Reshape"
+  op: "Reshape"
+  input: "G/fully_connected/BiasAdd"
+  input: "G/Reshape/shape_nchw"
+}
+node {
+  name: "G/Conv/convolution"
+  op: "Conv2D"
+  input: "G/Reshape"
+  input: "G/Conv/weights"
+  attr {
+    key: "padding"
+    value {
+      s: "SAME"
+    }
+  }
+  attr {
+    key: "strides"
+    value {
+      list {
+        i: 1
+        i: 1
+        i: 1
+        i: 1
+      }
+    }
+  }
+}
+node {
+  name: "G/Conv/BiasAdd"
+  op: "BiasAdd"
+  input: "G/Conv/convolution"
+  input: "G/Conv/biases"
+}
+node {
+  name: "G/Conv/Elu"
+  op: "Elu"
+  input: "G/Conv/BiasAdd"
+}
+node {
+  name: "G/Conv_1/convolution"
+  op: "Conv2D"
+  input: "G/Conv/Elu"
+  input: "G/Conv_1/weights"
+  attr {
+    key: "padding"
+    value {
+      s: "SAME"
+    }
+  }
+  attr {
+    key: "strides"
+    value {
+      list {
+        i: 1
+        i: 1
+        i: 1
+        i: 1
+      }
+    }
+  }
+}
+node {
+  name: "G/Conv_1/BiasAdd"
+  op: "BiasAdd"
+  input: "G/Conv_1/convolution"
+  input: "G/Conv_1/biases"
+}
+node {
+  name: "G/Conv_1/Elu"
+  op: "Elu"
+  input: "G/Conv_1/BiasAdd"
+}
+node {
+  name: "G/ResizeNearestNeighbor"
+  op: "ResizeNearestNeighbor"
+  input: "G/Conv_1/Elu"
+  input: "G/ResizeNearestNeighbor/size"
+  attr {
+    key: "align_corners"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "G/Conv_2/convolution"
+  op: "Conv2D"
+  input: "G/ResizeNearestNeighbor"
+  input: "G/Conv_2/weights"
+  attr {
+    key: "padding"
+    value {
+      s: "SAME"
+    }
+  }
+  attr {
+    key: "strides"
+    value {
+      list {
+        i: 1
+        i: 1
+        i: 1
+        i: 1
+      }
+    }
+  }
+}
+node {
+  name: "G/Conv_2/BiasAdd"
+  op: "BiasAdd"
+  input: "G/Conv_2/convolution"
+  input: "G/Conv_2/biases"
+}
+node {
+  name: "G/Conv_2/Elu"
+  op: "Elu"
+  input: "G/Conv_2/BiasAdd"
+}
+node {
+  name: "G/Conv_3/convolution"
+  op: "Conv2D"
+  input: "G/Conv_2/Elu"
+  input: "G/Conv_3/weights"
+  attr {
+    key: "padding"
+    value {
+      s: "SAME"
+    }
+  }
+  attr {
+    key: "strides"
+    value {
+      list {
+        i: 1
+        i: 1
+        i: 1
+        i: 1
+      }
+    }
+  }
+}
+node {
+  name: "G/Conv_3/BiasAdd"
+  op: "BiasAdd"
+  input: "G/Conv_3/convolution"
+  input: "G/Conv_3/biases"
+}
+node {
+  name: "G/Conv_3/Elu"
+  op: "Elu"
+  input: "G/Conv_3/BiasAdd"
+}
+node {
+  name: "G/ResizeNearestNeighbor_1"
+  op: "ResizeNearestNeighbor"
+  input: "G/Conv_3/Elu"
+  input: "G/ResizeNearestNeighbor_1/size"
+  attr {
+    key: "align_corners"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "G/Conv_4/convolution"
+  op: "Conv2D"
+  input: "G/ResizeNearestNeighbor_1"
+  input: "G/Conv_4/weights"
+  attr {
+    key: "padding"
+    value {
+      s: "SAME"
+    }
+  }
+  attr {
+    key: "strides"
+    value {
+      list {
+        i: 1
+        i: 1
+        i: 1
+        i: 1
+      }
+    }
+  }
+}
+node {
+  name: "G/Conv_4/BiasAdd"
+  op: "BiasAdd"
+  input: "G/Conv_4/convolution"
+  input: "G/Conv_4/biases"
+}
+node {
+  name: "G/Conv_4/Elu"
+  op: "Elu"
+  input: "G/Conv_4/BiasAdd"
+}
+node {
+  name: "G/Conv_5/convolution"
+  op: "Conv2D"
+  input: "G/Conv_4/Elu"
+  input: "G/Conv_5/weights"
+  attr {
+    key: "padding"
+    value {
+      s: "SAME"
+    }
+  }
+  attr {
+    key: "strides"
+    value {
+      list {
+        i: 1
+        i: 1
+        i: 1
+        i: 1
+      }
+    }
+  }
+}
+node {
+  name: "G/Conv_5/BiasAdd"
+  op: "BiasAdd"
+  input: "G/Conv_5/convolution"
+  input: "G/Conv_5/biases"
+}
+node {
+  name: "G/Conv_5/Elu"
+  op: "Elu"
+  input: "G/Conv_5/BiasAdd"
+}
+node {
+  name: "G/ResizeNearestNeighbor_2"
+  op: "ResizeNearestNeighbor"
+  input: "G/Conv_5/Elu"
+  input: "G/ResizeNearestNeighbor_2/size"
+  attr {
+    key: "align_corners"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "G/Conv_6/convolution"
+  op: "Conv2D"
+  input: "G/ResizeNearestNeighbor_2"
+  input: "G/Conv_6/weights"
+  attr {
+    key: "padding"
+    value {
+      s: "SAME"
+    }
+  }
+  attr {
+    key: "strides"
+    value {
+      list {
+        i: 1
+        i: 1
+        i: 1
+        i: 1
+      }
+    }
+  }
+}
+node {
+  name: "G/Conv_6/BiasAdd"
+  op: "BiasAdd"
+  input: "G/Conv_6/convolution"
+  input: "G/Conv_6/biases"
+}
+node {
+  name: "G/Conv_6/Elu"
+  op: "Elu"
+  input: "G/Conv_6/BiasAdd"
+}
+node {
+  name: "G/Conv_7/convolution"
+  op: "Conv2D"
+  input: "G/Conv_6/Elu"
+  input: "G/Conv_7/weights"
+  attr {
+    key: "padding"
+    value {
+      s: "SAME"
+    }
+  }
+  attr {
+    key: "strides"
+    value {
+      list {
+        i: 1
+        i: 1
+        i: 1
+        i: 1
+      }
+    }
+  }
+}
+node {
+  name: "G/Conv_7/BiasAdd"
+  op: "BiasAdd"
+  input: "G/Conv_7/convolution"
+  input: "G/Conv_7/biases"
+}
+node {
+  name: "G/Conv_7/Elu"
+  op: "Elu"
+  input: "G/Conv_7/BiasAdd"
+}
+node {
+  name: "G/Conv_8/convolution"
+  op: "Conv2D"
+  input: "G/Conv_7/Elu"
+  input: "G/Conv_8/weights"
+  attr {
+    key: "padding"
+    value {
+      s: "SAME"
+    }
+  }
+  attr {
+    key: "strides"
+    value {
+      list {
+        i: 1
+        i: 1
+        i: 1
+        i: 1
+      }
+    }
+  }
+}
+node {
+  name: "G/Conv_8/BiasAdd"
+  op: "BiasAdd"
+  input: "G/Conv_8/convolution"
+  input: "G/Conv_8/biases"
+}
